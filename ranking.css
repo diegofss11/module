@@ -1,0 +1,32 @@
+.mainComment{
+	height: 30px;
+	min-height: 30px;
+	min-width: 500px;
+	width: 500px;
+	padding-top: 8px;
+	border-color: #dadce0;
+	font-size: 12px;
+}
+
+.comment{
+	height: 30px;
+	min-height: 25px;
+	min-width: 500px;
+	width: 400px;
+	padding-top: 8px;
+	border-color: #dadce0;
+	font-size: 10px;
+}
+
+.divMainContent{
+	padding-top: 30px
+	padding-bottom: 5px; 
+}
+
+.divReplies{
+	padding-left: 70px;
+}
+
+.globalInput{
+	width: 500px;
+}
