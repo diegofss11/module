@@ -1,5 +1,5 @@
 angular.module('rankingModule', [])
-	.controller('rakingCtrl', function ($scope, $q, $http) {
+	.controller('rakingCtrl', function ($scope, $q, $http, moduleService) {
         $scope.comments = [];
         /*var comment1 = {
 	  			idParent: 0,
@@ -67,44 +67,25 @@ angular.module('rankingModule', [])
         };	
 
         $scope.getComments = function(){
-        	var deferred = $q.defer();
-			$http.get('http://api.projetobrasil.org:4242/v1/comments')
-	      		.success(function(data) {
-	      			deferred.resolve(data);			
-				})
-				.error(function(data) {
-					console.log('Error ao carregar os comentários ' + data);
-					deferred.reject(data);
-				})
-				.then(
-					function(result){
-						$scope.comments = result.data.comments;
-					},
-					function(failMessage){
-						 alert('Failed: ' + reason);
-					}
-				);
-	    }
-
-	    $scope.postComment = function(event, comment){
-        	if(comment && event.keyCode === 13){
-        		var commentObj = {};
-	        	
-				commentObj = {
-	        		idParent: 0,
-	        		idComment: 0,
-	        		content: comment,
-	        		score: 0
+        	var promise = moduleService.getComments();
+        	promise.then(
+				function(result){
+					$scope.comments = result.comments;
+				},
+				function(failMessage){
+					 alert('Failed: ' + reason);
 				}
-				$scope.comments.push(commentObj);
-	        }
-        }
-		
-    })
-	.directive('inputDirective', function(){
+			);
+	    }
+	})
+	.directive('inputDirective', function(moduleService){
 		return {
 			restrict: 'A',			
-			template: "<textarea ng-model='comment' ng-keyup='postComment($event, comment)'></textarea>",
+			template: "<textarea ng-model='comment' ng-keyup='moduleService.postComment($event, comment, idParent, idComment)'></textarea>",
+			scope: {
+				idParent: '@',
+				idComment: '@'
+			},
 			link : function (scope, elem, attrs, controller) {
 				if ( attrs.class === 'mainComment' ){
 					elem.children().eq(0).attr('placeholder','Redija um comentario...');
@@ -115,5 +96,38 @@ angular.module('rankingModule', [])
 				}                
             }
 		};
+	}).service('moduleService', function($http, $q){
+		var comments = [];
+
+		this.getComments = function(){
+			var deferred = $q.defer();
+			$http.get('http://api.projetobrasil.org:4242/v1/comments')
+	      		.success(function(data) {
+	      			deferred.resolve(data);			
+				})
+				.error(function(data) {
+					console.log('Error ao carregar os comentários ' + data);
+					deferred.reject(data);
+				})
+			return deferred.promise;
+		}
+		this.postComment = function(event, comment){
+        	if(comment && event.keyCode === 13){
+        		var commentObj = {};
+	        	
+				commentObj = {
+	        		idParent: 0,
+	        		idComment: 0,
+	        		content: comment,
+	        		score: 0
+				}
+				if (event.target.parentElement.className == "comment"){
+					comments.comments.push(commentObj);
+				}
+				else if(event.target.parentElement.className == "mainComment"){
+					comments.push(commentObj);
+				}				
+	        }
+        }
 	});
 	

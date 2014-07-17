@@ -3,7 +3,7 @@
 		<ul ng-repeat="comment in comments | orderBy:'-score'">
 			<div class="divMainContent">
 				<span>{{comment.content}}</span>
-				<div input-directive class="comment"></div>
+				<div input-directive idParent="{{comment.idParent}}" idComment="{{comment.idComment}}" class="comment"></div>
 				<span class="ranking">{{comment.score}} </span>
 				<a ng-click='increaseScore(comment)' href="#">UP</a>    <a ng-click='decreaseScore(comment)' href="#">DOWN</a></li>
 			</div>	
