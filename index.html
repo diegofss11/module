@@ -8,7 +8,7 @@
 				<a ng-click='increaseScore(comment)' href="#">UP</a>    <a ng-click='decreaseScore(comment)' href="#">DOWN</a></li>
 			</div>	
 			
-			<div class="divReplies" ng-if="comment.comments.length !== 0">
+			<div style="padding-left:70px" ng-if="comment.comments.length !== 0">
 				<div ng-repeat="replyOnComment in comment.comments | orderBy:'-replyOnComent.score'">
 					<span>{{replyOnComment.content}}</span>
 					<a ng-click='increaseScore(comment)' href="#">UP</a>    <a ng-click='decreaseScore(comment)' href="#">DOWN</a></li>
