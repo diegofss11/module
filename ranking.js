@@ -115,12 +115,13 @@ angular.module('rankingModule', [])
 	.directive('inputDirective', function(moduleService){
 		return {
 			restrict: 'A',			
-			template: "<textarea ng-model='comment' ng-keyup='moduleService.postComment($event, comment, idParent, idComment)'></textarea>",
+			template: "<textarea ng-model='comment' ng-keyup='scope.moduleService.postComment($event, comment, idParent, idComment)'></textarea>",
 			scope: {
 				idParent: '@',
 				idComment: '@'
 			},
 			link : function (scope, elem, attrs, controller) {
+				scope.moduleService = moduleService;
 				if ( attrs.class === 'mainComment' ){
 					elem.children().eq(0).attr('placeholder','Redija um comentario...');
 					elem.children().eq(0).addClass('globalInput');

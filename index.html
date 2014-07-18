@@ -1,6 +1,6 @@
 <html>
 	<body ng-app='rankingModule' ng-controller='rakingCtrl' ng-init="getComments()">
-		<ul ng-repeat="comment in comments | orderBy:'-score'">
+		<ul ng-repeat="comment in comments | filter:score | orderBy:'score':true">
 			<div class="divMainContent">
 				<span>{{comment.content}}</span>
 				<div input-directive idParent="{{comment.idParent}}" idComment="{{comment.idComment}}" class="comment"></div>
@@ -8,11 +8,12 @@
 				<a ng-click='increaseScore(comment)' href="#">UP</a>    <a ng-click='decreaseScore(comment)' href="#">DOWN</a></li>
 			</div>	
 			
-			<div style="padding-left:70px" ng-if="comment.comments.length !== 0">
-				<div ng-repeat="replyOnComment in comment.comments | orderBy:'-replyOnComent.score'">
+			<div style="padding-left:70px" ng-if="comment.comments.length !== 0" ng-repeat="replyOnComment in comment.comments | orderBy:'score':true">
+				<div>
 					<span>{{replyOnComment.content}}</span>
-					<a ng-click='increaseScore(comment)' href="#">UP</a>    <a ng-click='decreaseScore(comment)' href="#">DOWN</a></li>
-					<div input-directive class="comment"></div>
+					<span class="ranking">{{replyOnComment.score}} </span>
+					<a ng-click='increaseScore(replyOnComment)' href="#">UP</a>    <a ng-click='decreaseScore(replyOnComment)' href="#">DOWN</a></li>
+					<div idParent="{{comment.idParent}}" idComment="{{comment.idComment}}" input-directive class="comment"></div>
 				</div>
 			</div>
 		</ul>
