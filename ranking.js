@@ -1,63 +1,8 @@
 angular.module('rankingModule', [])
 	.controller('rakingCtrl', function ($scope, $q, $http, moduleService) {
         $scope.comments = [];
-        /*var comment1 = {
-	  			idParent: 0,
-	  			idComment : 1,
-	  			content: 'aaaaa',
-	  			score: 0,
-	  			comments: [{
-	  				idParent: 1,
-	  				idComent: 1,
-	  				score: 0,
-	  				content: 'Anwser to aaaa'
-	  			}]
-			},
-        	comment2 = {
-	  			idParent: 0,
-	  			idComment : 2,
-	  			content: 'bbbbb',
-	  			score: 0,
-	  			comments: [{
-	  				idParent: 2,
-	  				idComent: 2,
-	  				score: 0,
-	  				content: 'Anwser to bbbb'
-	  			}]
-			},
-        	comment3 = {
-  				idParent:0,
-  				idComment : 3,
-  				content: 'ccccc',
-  				score: 0,
-  				comments: [{
-  					idParent: 3,
-  					idComment:1,
-  					score: 0,
-	  				content: 'Anwser to ccccccc'
-	  			},
-	  			{
-  					idParent: 3,
-  					idComment:2,
-  					score: 0,
-	  				content: 'Anwser to ccccccc [2]'
-	  			}]
-			},
-			comment4 = {
-  				idParent: 0,
-  				idComment: 4,
-  				content: 'ddddddd',
-  				score: 0,
-  				comments: [{
-	  				
-	  			}]
-			};
-
-        $scope.comments.push(comment1);
-        $scope.comments.push(comment2);
-        $scope.comments.push(comment3);	
-        $scope.comments.push(comment4);	
-		*/
+        $scope.moduleService = moduleService;
+        
         $scope.increaseScore = function (comment) {
             comment.score += 1;
         };
@@ -77,6 +22,20 @@ angular.module('rankingModule', [])
 				}
 			);
 	    }
+
+	    $scope.postComment = function(event, comment){
+	    	if(comment && event.keyCode === 13){
+	    		var newComment = moduleService.postComment(comment),
+	    			parentElement = event.target.parentElement;
+	    		if (angular.element(parentElement).hasClass('comment')){
+					$scope.comments[0].comments.push(newComment); //TO DO SINCE VALUES ARE WRONG
+				}
+				else if(angular.element(parentElement).hasClass('mainComment')){
+					$scope.comments.push(newComment);
+				}	        		
+	    	}
+        	
+	    }
 	})
 	.service('moduleService', function($http, $q){
 		var comments = [];
@@ -93,43 +52,21 @@ angular.module('rankingModule', [])
 				})
 			return deferred.promise;
 		}
-		this.postComment = function(event, comment){
-        	if(comment && event.keyCode === 13){
-        		var commentObj = {};
-	        	
-				commentObj = {
-	        		idParent: 0,
-	        		idComment: 0,
-	        		content: comment,
-	        		score: 0
-				}
-				if (event.target.parentElement.className == "comment"){
-					comments.comments.push(commentObj);
-				}
-				else if(event.target.parentElement.className == "mainComment"){
-					comments.push(commentObj);
-				}				
-	        }
-        }
+		this.postComment = function(comment){
+    	 	return comment;						
+	    }
 	})
-	.directive('inputDirective', function(moduleService){
+	//to use this directive <div input-directive class-name="var" post-comment="moduleService.postComment($event, comment, idParent, idComment)" msg-placeholder="text"></div>
+	.directive('inputDirective', function(){
 		return {
-			restrict: 'A',			
-			template: "<textarea ng-model='comment' ng-keyup='scope.moduleService.postComment($event, comment, idParent, idComment)'></textarea>",
+			restrict: 'A',	
 			scope: {
-				idParent: '@',
-				idComment: '@'
-			},
-			link : function (scope, elem, attrs, controller) {
-				scope.moduleService = moduleService;
-				if ( attrs.class === 'mainComment' ){
-					elem.children().eq(0).attr('placeholder','Redija um comentario...');
-					elem.children().eq(0).addClass('globalInput');
-				}
-				else if ( attrs.class === 'comment' ){
-					elem.children().eq(0).attr('placeholder','Redija uma resposta...');
-				}                
-            }
+				postComment: '&',
+				msgPlaceholder: '@',
+				className: '@'
+			},		
+			template: "<textarea ng-model='comment' class='{{className}}' placeholder='{{msgPlaceholder}}' "+
+						"ng-keyup='postComment( {event:$event}, {comment: comment} )'></textarea>"						
 		};
 	});
 	

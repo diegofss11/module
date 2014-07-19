@@ -3,7 +3,7 @@
 		<ul ng-repeat="comment in comments | filter:score | orderBy:'score':true">
 			<div class="divMainContent">
 				<span>{{comment.content}}</span>
-				<div input-directive idParent="{{comment.idParent}}" idComment="{{comment.idComment}}" class="comment"></div>
+				<div id="commentBox_{{$index}}" input-directive msg-placeholder="Redija um comentario..." post-comment="postComment(event, comment, comment.idParent, comment.idComment)" class="comment"></div>
 				<span class="ranking">{{comment.score}} </span>
 				<a ng-click='increaseScore(comment)' href="#">UP</a>    <a ng-click='decreaseScore(comment)' href="#">DOWN</a></li>
 			</div>	
@@ -12,12 +12,12 @@
 				<div>
 					<span>{{replyOnComment.content}}</span>
 					<span class="ranking">{{replyOnComment.score}} </span>
-					<a ng-click='increaseScore(replyOnComment)' href="#">UP</a>    <a ng-click='decreaseScore(replyOnComment)' href="#">DOWN</a></li>
-					<div idParent="{{comment.idParent}}" idComment="{{comment.idComment}}" input-directive class="comment"></div>
+					<a ng-click='increaseScore(replyOnComment)' href="">UP</a>    <a ng-click='decreaseScore(replyOnComment)' href="">DOWN</a></li>
+					<div id="replyBox_{{$index}}" msg-placeholder="Redija uma resposta..." post-comment="postComment(event, replyOnComment)" input-directive class="comment"></div>
 				</div>
 			</div>
 		</ul>
-		<div input-directive class="mainComment"></div>
+		<div input-directive class-name="globalInput" post-comment="postComment(event, comment)" msg-placeholder="Redija um comentario..." class="mainComment"></div>
 	</body>
 	
 	<script src="angular.min.js"></script>	
